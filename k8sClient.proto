@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package quai;
+
+service K8sClientService {
+    rpc CreateNFSPersistentVolume(NFSPersistentVolumeReq) returns (PersistentVolumeName) {}
+    rpc CreatePersistentVolumeClaim(PersistentVolumeClaimReq) returns (PersistentVolumeClaimName) {}
+}
+
+message NFSPersistentVolumeReq {
+    string Name = 1;
+    string Storage = 2;
+    string Server = 3;
+    string Path = 4;
+}
+
+message PersistentVolumeName {
+    string value = 1;
+}
+
+message PersistentVolumeClaimReq {
+    string Name = 1;
+    string Storage = 2;
+}
+
+message PersistentVolumeClaimName {
+    string value = 1;
+}
+

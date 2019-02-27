@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package quai;
+
+service ModelService {
+    rpc StartTraining(TrainingReq) returns (Training) {}
+}
+
+message MountedPersistentVolumeClaim {
+    string PVCName = 1;
+    string MountPath = 2;
+}
+
+message TrainingReq {
+    string Name = 1;
+    string Image = 2;
+    MountedPersistentVolumeClaim DataSet = 3;
+    MountedPersistentVolumeClaim Model = 4;
+    uint64 GPU = 5;
+    repeated string Command = 6;
+    repeated string Arguments = 7;
+}
+
+message Training {
+    string value = 1;
+}
