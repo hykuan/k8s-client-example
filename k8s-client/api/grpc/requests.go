@@ -29,3 +29,11 @@ func (req createPVCReq) validate() error {
 	}
 	return nil
 }
+
+type createDeploymentReq struct {
+	deployment k8s_client.Deployment
+}
+
+func (req createDeploymentReq) validate() error {
+	return req.deployment.Validate()
+}

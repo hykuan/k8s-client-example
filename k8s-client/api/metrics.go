@@ -42,3 +42,12 @@ func (ms *metricsMiddleware) CreatePVC(pvc k8s_client.PersistentVolumeClaim) (na
 
 	return ms.svc.CreatePVC(pvc)
 }
+
+func (ms *metricsMiddleware) CreateDeployment(deployment k8s_client.Deployment) (name string, err error) {
+	defer func(begin time.Time) {
+		ms.counter.With("method", "login").Add(1)
+		ms.latency.With("method", "login").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return ms.svc.CreateDeployment(deployment)
+}

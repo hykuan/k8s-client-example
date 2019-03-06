@@ -48,6 +48,13 @@ func MakeHandler(svc k8s_client.Service, l log.Logger) http.Handler {
 		opts...,
 	))
 
+	mux.Post("/deployment", kithttp.NewServer(
+		createDeploymentEndpoint(svc),
+		decodeDeployment,
+		encodeResponse,
+		opts...,
+	))
+
 	mux.GetFunc("/version", quai.Version("k8s-client"))
 	mux.Handle("/metrics", promhttp.Handler())
 
@@ -82,6 +89,21 @@ func decodePersistentVolumeClaim(_ context.Context, r *http.Request) (interface{
 	}
 
 	return pvcReq{pvc}, nil
+}
+
+func decodeDeployment(_ context.Context, r *http.Request) (interface{}, error) {
+	if r.Header.Get("Content-Type") != contentType {
+		logger.Warn("Invalid or missing content type.")
+		return nil, errUnsupportedContentType
+	}
+
+	var deployment k8s_client.Deployment
+	if err := json.NewDecoder(r.Body).Decode(&deployment); err != nil {
+		logger.Warn(fmt.Sprintf("Failed to decode persistent volume: %s", err))
+		return nil, err
+	}
+
+	return deploymentReq{deployment}, nil
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {

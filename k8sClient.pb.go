@@ -243,35 +243,320 @@ func (m *PersistentVolumeClaimName) GetValue() string {
 	return ""
 }
 
+type Resource struct {
+	CPU                  string   `protobuf:"bytes,1,opt,name=CPU,json=cPU,proto3" json:"CPU,omitempty"`
+	Memory               string   `protobuf:"bytes,2,opt,name=Memory,json=memory,proto3" json:"Memory,omitempty"`
+	GPU                  string   `protobuf:"bytes,3,opt,name=GPU,json=gPU,proto3" json:"GPU,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Resource) Reset()         { *m = Resource{} }
+func (m *Resource) String() string { return proto.CompactTextString(m) }
+func (*Resource) ProtoMessage()    {}
+func (*Resource) Descriptor() ([]byte, []int) {
+	return fileDescriptor_988e21008b8e58f8, []int{4}
+}
+func (m *Resource) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Resource) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Resource.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Resource) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Resource.Merge(m, src)
+}
+func (m *Resource) XXX_Size() int {
+	return m.Size()
+}
+func (m *Resource) XXX_DiscardUnknown() {
+	xxx_messageInfo_Resource.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Resource proto.InternalMessageInfo
+
+func (m *Resource) GetCPU() string {
+	if m != nil {
+		return m.CPU
+	}
+	return ""
+}
+
+func (m *Resource) GetMemory() string {
+	if m != nil {
+		return m.Memory
+	}
+	return ""
+}
+
+func (m *Resource) GetGPU() string {
+	if m != nil {
+		return m.GPU
+	}
+	return ""
+}
+
+type VolumeInfo struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=Name,json=name,proto3" json:"Name,omitempty"`
+	PVCName              string   `protobuf:"bytes,2,opt,name=PVCName,json=pVCName,proto3" json:"PVCName,omitempty"`
+	MountPath            string   `protobuf:"bytes,3,opt,name=MountPath,json=mountPath,proto3" json:"MountPath,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VolumeInfo) Reset()         { *m = VolumeInfo{} }
+func (m *VolumeInfo) String() string { return proto.CompactTextString(m) }
+func (*VolumeInfo) ProtoMessage()    {}
+func (*VolumeInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_988e21008b8e58f8, []int{5}
+}
+func (m *VolumeInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VolumeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VolumeInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VolumeInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VolumeInfo.Merge(m, src)
+}
+func (m *VolumeInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *VolumeInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_VolumeInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VolumeInfo proto.InternalMessageInfo
+
+func (m *VolumeInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *VolumeInfo) GetPVCName() string {
+	if m != nil {
+		return m.PVCName
+	}
+	return ""
+}
+
+func (m *VolumeInfo) GetMountPath() string {
+	if m != nil {
+		return m.MountPath
+	}
+	return ""
+}
+
+type DeploymentReq struct {
+	Name                 string        `protobuf:"bytes,1,opt,name=Name,json=name,proto3" json:"Name,omitempty"`
+	Replicas             int32         `protobuf:"varint,2,opt,name=Replicas,json=replicas,proto3" json:"Replicas,omitempty"`
+	Image                string        `protobuf:"bytes,3,opt,name=Image,json=image,proto3" json:"Image,omitempty"`
+	Resource             *Resource     `protobuf:"bytes,4,opt,name=Resource,json=resource,proto3" json:"Resource,omitempty"`
+	Volumes              []*VolumeInfo `protobuf:"bytes,5,rep,name=Volumes,json=volumes,proto3" json:"Volumes,omitempty"`
+	Command              []string      `protobuf:"bytes,6,rep,name=Command,json=command,proto3" json:"Command,omitempty"`
+	Arguments            []string      `protobuf:"bytes,7,rep,name=Arguments,json=arguments,proto3" json:"Arguments,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *DeploymentReq) Reset()         { *m = DeploymentReq{} }
+func (m *DeploymentReq) String() string { return proto.CompactTextString(m) }
+func (*DeploymentReq) ProtoMessage()    {}
+func (*DeploymentReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_988e21008b8e58f8, []int{6}
+}
+func (m *DeploymentReq) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeploymentReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeploymentReq.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeploymentReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeploymentReq.Merge(m, src)
+}
+func (m *DeploymentReq) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeploymentReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeploymentReq.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeploymentReq proto.InternalMessageInfo
+
+func (m *DeploymentReq) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *DeploymentReq) GetReplicas() int32 {
+	if m != nil {
+		return m.Replicas
+	}
+	return 0
+}
+
+func (m *DeploymentReq) GetImage() string {
+	if m != nil {
+		return m.Image
+	}
+	return ""
+}
+
+func (m *DeploymentReq) GetResource() *Resource {
+	if m != nil {
+		return m.Resource
+	}
+	return nil
+}
+
+func (m *DeploymentReq) GetVolumes() []*VolumeInfo {
+	if m != nil {
+		return m.Volumes
+	}
+	return nil
+}
+
+func (m *DeploymentReq) GetCommand() []string {
+	if m != nil {
+		return m.Command
+	}
+	return nil
+}
+
+func (m *DeploymentReq) GetArguments() []string {
+	if m != nil {
+		return m.Arguments
+	}
+	return nil
+}
+
+type DeploymentName struct {
+	Value                string   `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeploymentName) Reset()         { *m = DeploymentName{} }
+func (m *DeploymentName) String() string { return proto.CompactTextString(m) }
+func (*DeploymentName) ProtoMessage()    {}
+func (*DeploymentName) Descriptor() ([]byte, []int) {
+	return fileDescriptor_988e21008b8e58f8, []int{7}
+}
+func (m *DeploymentName) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeploymentName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeploymentName.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeploymentName) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeploymentName.Merge(m, src)
+}
+func (m *DeploymentName) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeploymentName) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeploymentName.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeploymentName proto.InternalMessageInfo
+
+func (m *DeploymentName) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*NFSPersistentVolumeReq)(nil), "quai.NFSPersistentVolumeReq")
 	proto.RegisterType((*PersistentVolumeName)(nil), "quai.PersistentVolumeName")
 	proto.RegisterType((*PersistentVolumeClaimReq)(nil), "quai.PersistentVolumeClaimReq")
 	proto.RegisterType((*PersistentVolumeClaimName)(nil), "quai.PersistentVolumeClaimName")
+	proto.RegisterType((*Resource)(nil), "quai.Resource")
+	proto.RegisterType((*VolumeInfo)(nil), "quai.VolumeInfo")
+	proto.RegisterType((*DeploymentReq)(nil), "quai.DeploymentReq")
+	proto.RegisterType((*DeploymentName)(nil), "quai.DeploymentName")
 }
 
 func init() { proto.RegisterFile("k8sClient.proto", fileDescriptor_988e21008b8e58f8) }
 
 var fileDescriptor_988e21008b8e58f8 = []byte{
-	// 276 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcf, 0xb6, 0x28, 0x76,
-	0xce, 0xc9, 0x4c, 0xcd, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x29, 0x2c, 0x4d,
-	0xcc, 0x54, 0x2a, 0xe2, 0x12, 0xf3, 0x73, 0x0b, 0x0e, 0x48, 0x2d, 0x2a, 0xce, 0x2c, 0x2e, 0x49,
-	0xcd, 0x2b, 0x09, 0xcb, 0xcf, 0x29, 0xcd, 0x4d, 0x0d, 0x4a, 0x2d, 0x14, 0x12, 0xe2, 0x62, 0xf1,
-	0x4b, 0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x62, 0xc9, 0x4b, 0xcc, 0x4d, 0x15,
-	0x92, 0xe0, 0x62, 0x0f, 0x2e, 0xc9, 0x2f, 0x4a, 0x4c, 0x4f, 0x95, 0x60, 0x02, 0x0b, 0xb3, 0x17,
-	0x43, 0xb8, 0x42, 0x62, 0x5c, 0x6c, 0xc1, 0xa9, 0x45, 0x65, 0xa9, 0x45, 0x12, 0xcc, 0x60, 0x09,
-	0xb6, 0x62, 0x30, 0x0f, 0x64, 0x4a, 0x40, 0x62, 0x49, 0x86, 0x04, 0x0b, 0xc4, 0x94, 0x82, 0xc4,
-	0x92, 0x0c, 0x25, 0x1d, 0x2e, 0x11, 0x74, 0x0b, 0x41, 0x36, 0x09, 0x89, 0x70, 0xb1, 0x96, 0x25,
-	0xe6, 0x94, 0xc2, 0xac, 0x84, 0x70, 0x94, 0x3c, 0xb8, 0x24, 0xd0, 0x55, 0x3b, 0xe7, 0x24, 0x66,
-	0xe6, 0x92, 0xec, 0x46, 0x25, 0x43, 0x2e, 0x49, 0xac, 0x26, 0xe1, 0xb6, 0xdc, 0xe8, 0x2c, 0x23,
-	0x97, 0x80, 0x37, 0x2c, 0xe0, 0x40, 0x1e, 0xcc, 0x4c, 0x4e, 0x15, 0x0a, 0xe7, 0x92, 0x74, 0x2e,
-	0x4a, 0x4d, 0x2c, 0x49, 0xc5, 0x12, 0x72, 0x42, 0x32, 0x7a, 0xa0, 0x70, 0xd5, 0xc3, 0x1e, 0xa8,
-	0x52, 0x52, 0x10, 0x59, 0x6c, 0xde, 0x57, 0x62, 0x10, 0x4a, 0xe0, 0x92, 0x86, 0x18, 0x8c, 0xd5,
-	0x99, 0x42, 0x72, 0xd8, 0x35, 0xc3, 0x42, 0x43, 0x4a, 0x1e, 0x8f, 0x3c, 0xc4, 0x06, 0x27, 0x81,
-	0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc6, 0x63, 0x39,
-	0x86, 0x24, 0x36, 0x70, 0x6a, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x27, 0x11, 0xe2, 0xa3,
-	0x20, 0x02, 0x00, 0x00,
+	// 492 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xad, 0xeb, 0x24, 0x6e, 0xa6, 0xa2, 0x58, 0x4b, 0x54, 0xb9, 0xa6, 0x32, 0x91, 0x0f, 0xa8,
+	0xaa, 0x50, 0x24, 0xc2, 0x85, 0x1b, 0x02, 0xa3, 0x42, 0x85, 0x5a, 0x59, 0x8e, 0x52, 0x38, 0xb2,
+	0x98, 0x21, 0xb5, 0xf0, 0x7a, 0xdd, 0xf5, 0x3a, 0x52, 0x7f, 0x82, 0x33, 0x9f, 0xc4, 0x91, 0x4f,
+	0x40, 0x41, 0xfc, 0x07, 0xda, 0x5d, 0x5b, 0x11, 0x91, 0x53, 0x89, 0xe3, 0x9b, 0x19, 0xbf, 0x37,
+	0x6f, 0xf6, 0x25, 0x70, 0xff, 0xeb, 0xf3, 0x2a, 0xca, 0x33, 0x2c, 0xe4, 0xa4, 0x14, 0x5c, 0x72,
+	0xd2, 0xbb, 0xa9, 0x69, 0x16, 0x0a, 0x38, 0xbc, 0x3c, 0x9b, 0xc5, 0x28, 0xaa, 0xac, 0x92, 0x58,
+	0xc8, 0x2b, 0x9e, 0xd7, 0x0c, 0x13, 0xbc, 0x21, 0x04, 0x7a, 0x97, 0x94, 0xa1, 0x67, 0x8d, 0xad,
+	0x93, 0x61, 0xd2, 0x2b, 0x28, 0x43, 0xe2, 0x81, 0x33, 0x93, 0x5c, 0xd0, 0x05, 0x7a, 0xbb, 0xba,
+	0xec, 0x54, 0x06, 0x92, 0x43, 0x18, 0xcc, 0x50, 0x2c, 0x51, 0x78, 0xb6, 0x6e, 0x0c, 0x2a, 0x8d,
+	0x14, 0x4b, 0x4c, 0xe5, 0xb5, 0xd7, 0x33, 0x2c, 0x25, 0x95, 0xd7, 0xe1, 0x13, 0x18, 0x6d, 0x0a,
+	0x2a, 0x25, 0x32, 0x82, 0xfe, 0x92, 0xe6, 0x75, 0x2b, 0x69, 0x40, 0xf8, 0x16, 0xbc, 0xcd, 0xe9,
+	0x28, 0xa7, 0x19, 0xfb, 0xef, 0x1d, 0xc3, 0xa7, 0x70, 0xd4, 0xc9, 0x74, 0x87, 0xf8, 0x19, 0xec,
+	0x25, 0x58, 0xf1, 0x5a, 0xa4, 0x48, 0x5c, 0xb0, 0xa3, 0x78, 0xde, 0xf4, 0xed, 0x34, 0x9e, 0x2b,
+	0xd3, 0x17, 0xc8, 0xb8, 0xb8, 0x6d, 0x94, 0x06, 0x4c, 0x23, 0x35, 0xf9, 0x26, 0x9e, 0x37, 0x97,
+	0xb0, 0x17, 0xf1, 0x3c, 0xfc, 0x00, 0x60, 0x04, 0xcf, 0x8b, 0x2f, 0x7c, 0xdb, 0xda, 0xf1, 0x55,
+	0xa4, 0xcb, 0xcd, 0xda, 0xa5, 0x81, 0xe4, 0x18, 0x86, 0x17, 0xbc, 0x2e, 0xa4, 0xbe, 0xa3, 0xe1,
+	0x1c, 0xb2, 0xb6, 0x10, 0xfe, 0xb1, 0xe0, 0xde, 0x6b, 0x2c, 0x73, 0x7e, 0xcb, 0xb0, 0x90, 0xdb,
+	0x8e, 0xe2, 0x2b, 0x1f, 0x65, 0x9e, 0xa5, 0xb4, 0xd2, 0xf4, 0xfd, 0x64, 0x4f, 0x34, 0x58, 0x39,
+	0x3f, 0x67, 0xea, 0x5c, 0x86, 0xbb, 0x9f, 0x29, 0x40, 0x4e, 0xd7, 0xce, 0xf5, 0xe3, 0xed, 0x4f,
+	0x0f, 0x26, 0x2a, 0x31, 0x93, 0xb6, 0xaa, 0x18, 0x9a, 0xcb, 0x9c, 0x82, 0x63, 0xdc, 0x55, 0x5e,
+	0x7f, 0x6c, 0x9f, 0xec, 0x4f, 0x5d, 0x33, 0xba, 0xb6, 0x9c, 0x38, 0x4b, 0x33, 0xa0, 0x7c, 0x46,
+	0x9c, 0x31, 0x5a, 0x7c, 0xf6, 0x06, 0x63, 0x5b, 0xf9, 0x4c, 0x0d, 0x54, 0x3e, 0x5f, 0x8a, 0x45,
+	0xad, 0x6c, 0x54, 0x9e, 0xa3, 0x7b, 0x43, 0xda, 0x16, 0xc2, 0xc7, 0x70, 0xb0, 0xb6, 0xb9, 0xfd,
+	0xc5, 0xa6, 0xdf, 0x76, 0xc1, 0x7d, 0xd7, 0x46, 0x5d, 0x45, 0x32, 0x4b, 0x91, 0xbc, 0x87, 0xa3,
+	0x48, 0x20, 0x95, 0xd8, 0x91, 0x75, 0x72, 0x6c, 0x96, 0xed, 0xfe, 0x19, 0xf8, 0xbe, 0xe9, 0x76,
+	0x05, 0x36, 0xdc, 0x21, 0x1f, 0xe1, 0xa1, 0x21, 0xee, 0x0c, 0x16, 0x09, 0xba, 0x3f, 0x6e, 0xf3,
+	0xeb, 0x3f, 0xba, 0xa3, 0xdf, 0x28, 0xbc, 0x00, 0xd7, 0x28, 0xac, 0xdd, 0x93, 0x07, 0xe6, 0xb3,
+	0x7f, 0x9e, 0xdd, 0x1f, 0x6d, 0x16, 0x0d, 0xc1, 0x2b, 0xf7, 0xc7, 0x2a, 0xb0, 0x7e, 0xae, 0x02,
+	0xeb, 0xd7, 0x2a, 0xb0, 0xbe, 0xff, 0x0e, 0x76, 0x3e, 0x0d, 0xf4, 0x1f, 0xc0, 0xb3, 0xbf, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0xaf, 0x32, 0x6d, 0x2b, 0x13, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -288,6 +573,7 @@ const _ = grpc.SupportPackageIsVersion4
 type K8SClientServiceClient interface {
 	CreateNFSPersistentVolume(ctx context.Context, in *NFSPersistentVolumeReq, opts ...grpc.CallOption) (*PersistentVolumeName, error)
 	CreatePersistentVolumeClaim(ctx context.Context, in *PersistentVolumeClaimReq, opts ...grpc.CallOption) (*PersistentVolumeClaimName, error)
+	CreateDeployment(ctx context.Context, in *DeploymentReq, opts ...grpc.CallOption) (*DeploymentName, error)
 }
 
 type k8SClientServiceClient struct {
@@ -316,10 +602,20 @@ func (c *k8SClientServiceClient) CreatePersistentVolumeClaim(ctx context.Context
 	return out, nil
 }
 
+func (c *k8SClientServiceClient) CreateDeployment(ctx context.Context, in *DeploymentReq, opts ...grpc.CallOption) (*DeploymentName, error) {
+	out := new(DeploymentName)
+	err := c.cc.Invoke(ctx, "/quai.K8sClientService/CreateDeployment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // K8SClientServiceServer is the server API for K8SClientService service.
 type K8SClientServiceServer interface {
 	CreateNFSPersistentVolume(context.Context, *NFSPersistentVolumeReq) (*PersistentVolumeName, error)
 	CreatePersistentVolumeClaim(context.Context, *PersistentVolumeClaimReq) (*PersistentVolumeClaimName, error)
+	CreateDeployment(context.Context, *DeploymentReq) (*DeploymentName, error)
 }
 
 func RegisterK8SClientServiceServer(s *grpc.Server, srv K8SClientServiceServer) {
@@ -362,6 +658,24 @@ func _K8SClientService_CreatePersistentVolumeClaim_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _K8SClientService_CreateDeployment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeploymentReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(K8SClientServiceServer).CreateDeployment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/quai.K8sClientService/CreateDeployment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(K8SClientServiceServer).CreateDeployment(ctx, req.(*DeploymentReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _K8SClientService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "quai.K8sClientService",
 	HandlerType: (*K8SClientServiceServer)(nil),
@@ -373,6 +687,10 @@ var _K8SClientService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePersistentVolumeClaim",
 			Handler:    _K8SClientService_CreatePersistentVolumeClaim_Handler,
+		},
+		{
+			MethodName: "CreateDeployment",
+			Handler:    _K8SClientService_CreateDeployment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -511,6 +829,201 @@ func (m *PersistentVolumeClaimName) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *Resource) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Resource) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.CPU) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.CPU)))
+		i += copy(dAtA[i:], m.CPU)
+	}
+	if len(m.Memory) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.Memory)))
+		i += copy(dAtA[i:], m.Memory)
+	}
+	if len(m.GPU) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.GPU)))
+		i += copy(dAtA[i:], m.GPU)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *VolumeInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VolumeInfo) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
+	}
+	if len(m.PVCName) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.PVCName)))
+		i += copy(dAtA[i:], m.PVCName)
+	}
+	if len(m.MountPath) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.MountPath)))
+		i += copy(dAtA[i:], m.MountPath)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *DeploymentReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeploymentReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
+	}
+	if m.Replicas != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(m.Replicas))
+	}
+	if len(m.Image) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.Image)))
+		i += copy(dAtA[i:], m.Image)
+	}
+	if m.Resource != nil {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(m.Resource.Size()))
+		n1, err := m.Resource.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
+	if len(m.Volumes) > 0 {
+		for _, msg := range m.Volumes {
+			dAtA[i] = 0x2a
+			i++
+			i = encodeVarintK8SClient(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Command) > 0 {
+		for _, s := range m.Command {
+			dAtA[i] = 0x32
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if len(m.Arguments) > 0 {
+		for _, s := range m.Arguments {
+			dAtA[i] = 0x3a
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *DeploymentName) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeploymentName) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Value) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintK8SClient(dAtA, i, uint64(len(m.Value)))
+		i += copy(dAtA[i:], m.Value)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
 func encodeVarintK8SClient(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -585,6 +1098,115 @@ func (m *PersistentVolumeClaimReq) Size() (n int) {
 }
 
 func (m *PersistentVolumeClaimName) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Value)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *Resource) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CPU)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	l = len(m.Memory)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	l = len(m.GPU)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *VolumeInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	l = len(m.PVCName)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	l = len(m.MountPath)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeploymentReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if m.Replicas != 0 {
+		n += 1 + sovK8SClient(uint64(m.Replicas))
+	}
+	l = len(m.Image)
+	if l > 0 {
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if m.Resource != nil {
+		l = m.Resource.Size()
+		n += 1 + l + sovK8SClient(uint64(l))
+	}
+	if len(m.Volumes) > 0 {
+		for _, e := range m.Volumes {
+			l = e.Size()
+			n += 1 + l + sovK8SClient(uint64(l))
+		}
+	}
+	if len(m.Command) > 0 {
+		for _, s := range m.Command {
+			l = len(s)
+			n += 1 + l + sovK8SClient(uint64(l))
+		}
+	}
+	if len(m.Arguments) > 0 {
+		for _, s := range m.Arguments {
+			l = len(s)
+			n += 1 + l + sovK8SClient(uint64(l))
+		}
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeploymentName) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1026,6 +1648,663 @@ func (m *PersistentVolumeClaimName) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: PersistentVolumeClaimName: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Value = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipK8SClient(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Resource) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowK8SClient
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Resource: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Resource: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CPU", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CPU = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Memory", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Memory = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GPU", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GPU = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipK8SClient(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *VolumeInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowK8SClient
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VolumeInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VolumeInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PVCName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PVCName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MountPath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MountPath = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipK8SClient(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeploymentReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowK8SClient
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeploymentReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeploymentReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Replicas", wireType)
+			}
+			m.Replicas = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Replicas |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Image", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Image = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Resource", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Resource == nil {
+				m.Resource = &Resource{}
+			}
+			if err := m.Resource.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Volumes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Volumes = append(m.Volumes, &VolumeInfo{})
+			if err := m.Volumes[len(m.Volumes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Command", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Command = append(m.Command, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Arguments", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowK8SClient
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Arguments = append(m.Arguments, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipK8SClient(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthK8SClient
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeploymentName) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowK8SClient
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeploymentName: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeploymentName: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

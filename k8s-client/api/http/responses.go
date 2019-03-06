@@ -41,3 +41,19 @@ func (res PVCRes) Headers() map[string]string {
 func (res PVCRes) Empty() bool {
 	return res.Name == ""
 }
+
+type DeploymentRes struct {
+	Name string `json:"name,omitempty"`
+}
+
+func (res DeploymentRes) Code() int {
+	return http.StatusCreated
+}
+
+func (res DeploymentRes) Headers() map[string]string {
+	return map[string]string{}
+}
+
+func (res DeploymentRes) Empty() bool {
+	return res.Name == ""
+}

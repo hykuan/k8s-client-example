@@ -10,3 +10,8 @@ type createPVCRes struct {
 	err error
 }
 
+type createDeploymentRes struct {
+	name string
+	err error
+}
+

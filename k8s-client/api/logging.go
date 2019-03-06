@@ -46,3 +46,17 @@ func (lm *loggingMiddleware) CreatePVC(pvc k8s_client.PersistentVolumeClaim) (na
 
 	return lm.svc.CreatePVC(pvc)
 }
+
+func (lm *loggingMiddleware) CreateDeployment(deployment k8s_client.Deployment) (name string, err error) {
+	defer func(begin time.Time) {
+		message := fmt.Sprintf("Method register for user %+v took %s to complete", deployment, time.Since(begin))
+		if err != nil {
+			lm.logger.Warn(fmt.Sprintf("%s with error: %s.", message, err))
+			return
+		}
+		lm.logger.Info(fmt.Sprintf("%s without errors.", message))
+
+	}(time.Now())
+
+	return lm.svc.CreateDeployment(deployment)
+}

@@ -22,3 +22,11 @@ func (req pvcReq) validate() error {
 	return req.pvc.Validate()
 }
 
+type deploymentReq struct {
+	deployment k8s_client.Deployment
+}
+
+func (req deploymentReq) validate() error {
+	return req.deployment.Validate()
+}
+

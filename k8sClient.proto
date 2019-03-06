@@ -5,6 +5,7 @@ package quai;
 service K8sClientService {
     rpc CreateNFSPersistentVolume(NFSPersistentVolumeReq) returns (PersistentVolumeName) {}
     rpc CreatePersistentVolumeClaim(PersistentVolumeClaimReq) returns (PersistentVolumeClaimName) {}
+    rpc CreateDeployment(DeploymentReq) returns (DeploymentName) {}
 }
 
 message NFSPersistentVolumeReq {
@@ -27,3 +28,28 @@ message PersistentVolumeClaimName {
     string value = 1;
 }
 
+message Resource {
+    string CPU = 1;
+    string Memory = 2;
+    string GPU = 3;
+}
+
+message VolumeInfo {
+    string Name = 1;
+    string PVCName = 2;
+    string MountPath = 3;
+}
+
+message DeploymentReq {
+    string Name = 1;
+    int32 Replicas = 2;
+    string Image = 3;
+    Resource Resource = 4;
+    repeated VolumeInfo Volumes = 5;
+    repeated string Command = 6;
+    repeated string Arguments = 7;
+}
+
+message DeploymentName {
+    string value = 1;
+}

@@ -43,3 +43,18 @@ func createPVCEndpoint(svc k8s_client.Service) endpoint.Endpoint {
 		return createPVCRes{name: pvcName, err: nil}, nil
 	}
 }
+
+func createDeploymentEndpoint(svc k8s_client.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(createDeploymentReq)
+		if err := req.validate(); err != nil {
+			return nil, err
+		}
+
+		deployment, err := svc.CreateDeployment(req.deployment)
+		if err != nil {
+			return createDeploymentRes{name: "", err: err}, err
+		}
+		return createDeploymentRes{name: deployment, err: nil}, nil
+	}
+}
