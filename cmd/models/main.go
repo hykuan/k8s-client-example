@@ -1,14 +1,12 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"syscall"
 
 	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
@@ -16,33 +14,31 @@ import (
 	"github.com/qeek-dev/quaistudio"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/util/homedir"
-	metrics "k8s.io/metrics/pkg/client/clientset/versioned"
 
 	"github.com/hykuan/k8s-client-example"
-	"github.com/hykuan/k8s-client-example/k8s-client"
-	"github.com/hykuan/k8s-client-example/k8s-client/api"
-	grpcapi "github.com/hykuan/k8s-client-example/k8s-client/api/grpc"
-	httpapi "github.com/hykuan/k8s-client-example/k8s-client/api/http"
+	k8sapi "github.com/hykuan/k8s-client-example/k8s-client/api/grpc"
 	"github.com/hykuan/k8s-client-example/logger"
+	"github.com/hykuan/k8s-client-example/models"
+	"github.com/hykuan/k8s-client-example/models/api"
+	grpcapi "github.com/hykuan/k8s-client-example/models/api/grpc"
+	httpapi "github.com/hykuan/k8s-client-example/models/api/http"
 )
 
 const (
 	defLogLevel   = "info"
-	defHTTPPort   = "8180"
-	defGRPCPort   = "8181"
+	defHTTPPort   = "8182"
+	defGRPCPort   = "8183"
 	defSecret     = "users"
 	defServerCert = ""
 	defServerKey  = ""
-	envLogLevel   = "QS_USERS_LOG_LEVEL"
-	envHTTPPort   = "QS_USERS_HTTP_PORT"
-	envGRPCPort   = "QS_USERS_GRPC_PORT"
-	envSecret     = "QS_USERS_SECRET"
-	envServerCert = "QS_USERS_SERVER_CERT"
-	envServerKey  = "QS_USERS_SERVER_KEY"
+	defK8sUrl     = "localhost:8181"
+	envLogLevel   = "QS_MODELS_LOG_LEVEL"
+	envHTTPPort   = "QS_MODELS_HTTP_PORT"
+	envGRPCPort   = "QS_MODELS_GRPC_PORT"
+	envSecret     = "QS_MODELS_SECRET"
+	envServerCert = "QS_MODELS_SERVER_CERT"
+	envServerKey  = "QS_MODELS_SERVER_KEY"
+	envK8sUrl     = "QS_K8S_URL"
 )
 
 type config struct {
@@ -52,6 +48,7 @@ type config struct {
 	secret     string
 	serverCert string
 	serverKey  string
+	k8sUrl     string
 }
 
 func main() {
@@ -62,29 +59,10 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	var kubeconfig *string
-	if home := homedir.HomeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-	}
-	flag.Parse()
+	conn := connectToK8sService(cfg.k8sUrl, logger)
+	defer conn.Close()
 
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-	if err != nil {
-		panic(err)
-	}
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err)
-	}
-	mc, err := metrics.NewForConfig(config)
-	list, err := mc.MetricsV1beta1().NodeMetricses().List(metav1.ListOptions{})
-	if len(list.Items) == 0 {
-		panic(err)
-	}
-
-	svc := newService(clientset, logger)
+	svc := newService(conn, logger)
 	errs := make(chan error, 2)
 
 	go startHTTPServer(svc, cfg.httpPort, cfg.serverCert, cfg.serverKey, logger, errs)
@@ -108,22 +86,34 @@ func loadConfig() config {
 		secret:     quaistudio.Env(envSecret, defSecret),
 		serverCert: quaistudio.Env(envServerCert, defServerCert),
 		serverKey:  quaistudio.Env(envServerKey, defServerKey),
+		k8sUrl:     quaistudio.Env(envK8sUrl, defK8sUrl),
 	}
 }
 
-func newService(clientSet *kubernetes.Clientset, logger logger.Logger) k8s_client.Service {
-	svc := k8s_client.New(clientSet)
+func connectToK8sService(k8sAddr string, logger logger.Logger) *grpc.ClientConn {
+	conn, err := grpc.Dial(k8sAddr, grpc.WithInsecure())
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to connect to k8s service: %s", err))
+		os.Exit(1)
+	}
+	return conn
+}
+
+func newService(conn *grpc.ClientConn, logger logger.Logger) models.Service {
+	k8sClient := k8sapi.NewClient(conn)
+
+	svc := models.New(k8sClient)
 	svc = api.LoggingMiddleware(svc, logger)
 	svc = api.MetricsMiddleware(
 		svc,
 		kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
-			Namespace: "k8s_client",
+			Namespace: "models",
 			Subsystem: "api",
 			Name:      "request_count",
 			Help:      "Number of requests received.",
 		}, []string{"method"}),
 		kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-			Namespace: "k8s_client",
+			Namespace: "models",
 			Subsystem: "api",
 			Name:      "request_latency_microseconds",
 			Help:      "Total duration of requests in microseconds.",
@@ -132,18 +122,18 @@ func newService(clientSet *kubernetes.Clientset, logger logger.Logger) k8s_clien
 	return svc
 }
 
-func startHTTPServer(svc k8s_client.Service, port string, certFile string, keyFile string, logger logger.Logger, errs chan error) {
+func startHTTPServer(svc models.Service, port string, certFile string, keyFile string, logger logger.Logger, errs chan error) {
 	p := fmt.Sprintf(":%s", port)
 	if certFile != "" || keyFile != "" {
-		logger.Info(fmt.Sprintf("k8s-client service started using https, cert %s key %s, exposed port %s", certFile, keyFile, port))
+		logger.Info(fmt.Sprintf("models service started using https, cert %s key %s, exposed port %s", certFile, keyFile, port))
 		errs <- http.ListenAndServeTLS(p, certFile, keyFile, httpapi.MakeHandler(svc, logger))
 	} else {
-		logger.Info(fmt.Sprintf("k8s-client service started using http, exposed port %s", port))
+		logger.Info(fmt.Sprintf("models service started using http, exposed port %s", port))
 		errs <- http.ListenAndServe(p, httpapi.MakeHandler(svc, logger))
 	}
 }
 
-func startGRPCServer(svc k8s_client.Service, port string, certFile string, keyFile string, logger logger.Logger, errs chan error) {
+func startGRPCServer(svc models.Service, port string, certFile string, keyFile string, logger logger.Logger, errs chan error) {
 	p := fmt.Sprintf(":%s", port)
 	listener, err := net.Listen("tcp", p)
 	if err != nil {
@@ -154,17 +144,17 @@ func startGRPCServer(svc k8s_client.Service, port string, certFile string, keyFi
 	if certFile != "" || keyFile != "" {
 		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Failed to load users certificates: %s", err))
+			logger.Error(fmt.Sprintf("Failed to load models certificates: %s", err))
 			os.Exit(1)
 		}
-		logger.Info(fmt.Sprintf("k8s-client gRPC service started using https on port %s with cert %s key %s", port, certFile, keyFile))
+		logger.Info(fmt.Sprintf("models gRPC service started using https on port %s with cert %s key %s", port, certFile, keyFile))
 		server = grpc.NewServer(grpc.Creds(creds))
 	} else {
-		logger.Info(fmt.Sprintf("k8s-client gRPC service started using http on port %s", port))
+		logger.Info(fmt.Sprintf("models gRPC service started using http on port %s", port))
 		server = grpc.NewServer()
 	}
 
-	quai.RegisterK8SClientServiceServer(server, grpcapi.NewServer(svc))
-	logger.Info(fmt.Sprintf("k8s-client gRPC service started, exposed port %s", port))
+	quai.RegisterModelServiceServer(server, grpcapi.NewServer(svc))
+	logger.Info(fmt.Sprintf("models gRPC service started, exposed port %s", port))
 	errs <- server.Serve(listener)
 }

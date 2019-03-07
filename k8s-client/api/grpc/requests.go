@@ -30,10 +30,32 @@ func (req createPVCReq) validate() error {
 	return nil
 }
 
+type Resource struct {
+	CPU    string
+	Memory string
+	GPU    string
+}
+
+type VolumeInfo struct {
+	Name      string
+	PVCName   string
+	MountPath string
+}
+
 type createDeploymentReq struct {
-	deployment k8s_client.Deployment
+	Name      string
+	Replicas  int32
+	Image     string
+	Resource  *Resource
+	Volumes   []*VolumeInfo
+	Command   []string
+	Arguments []string
 }
 
 func (req createDeploymentReq) validate() error {
-	return req.deployment.Validate()
+	if req.Name == "" || req.Image == "" {
+		return k8s_client.ErrMalformedEntity
+	}
+
+	return nil
 }

@@ -8,6 +8,7 @@ import (
 var (
 	_ quai.Response = (*PVRes)(nil)
 	_ quai.Response = (*PVCRes)(nil)
+	_ quai.Response = (*DeploymentRes)(nil)
 )
 
 type PVRes struct {

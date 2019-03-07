@@ -51,7 +51,30 @@ func createDeploymentEndpoint(svc k8s_client.Service) endpoint.Endpoint {
 			return nil, err
 		}
 
-		deployment, err := svc.CreateDeployment(req.deployment)
+		resource := k8s_client.Resource{}
+		if req.Resource != nil {
+			resource.Memory = req.Resource.Memory
+			resource.CPU = req.Resource.CPU
+			resource.GPU = req.Resource.GPU
+		}
+		volumes := []*k8s_client.VolumeInfo{}
+		for _, volume := range req.Volumes {
+			volumes = append(volumes, &k8s_client.VolumeInfo{
+				Name:      volume.Name,
+				PVCName:   volume.PVCName,
+				MountPath: volume.MountPath,
+			})
+		}
+
+		deployment, err := svc.CreateDeployment(k8s_client.Deployment{
+			Name:      req.Name,
+			Replicas:  req.Replicas,
+			Image:     req.Image,
+			Resource:  &resource,
+			Volumes:   volumes,
+			Command:   req.Command,
+			Arguments: req.Arguments,
+		})
 		if err != nil {
 			return createDeploymentRes{name: "", err: err}, err
 		}

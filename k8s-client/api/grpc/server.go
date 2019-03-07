@@ -19,20 +19,20 @@ import (
 var _ quai.K8SClientServiceServer = (*grpcServer)(nil)
 
 type grpcServer struct {
-	createNFSPV      kitgrpc.Handler
-	createPVC        kitgrpc.Handler
-	createDeployment kitgrpc.Handler
+	createNFSPersistentVolume   kitgrpc.Handler
+	createPersistentVolumeClaim kitgrpc.Handler
+	createDeployment            kitgrpc.Handler
 }
 
 // NewServer returns new K8sClientServiceServer instance.
 func NewServer(svc k8s_client.Service) quai.K8SClientServiceServer {
 	return &grpcServer{
-		createNFSPV: kitgrpc.NewServer(
+		createNFSPersistentVolume: kitgrpc.NewServer(
 			createNFSPVEndpoint(svc),
 			decodeCreateNFSPVCRequest,
 			encodeCreateNFSPVCResponse,
 		),
-		createPVC: kitgrpc.NewServer(
+		createPersistentVolumeClaim: kitgrpc.NewServer(
 			createPVCEndpoint(svc),
 			decodeCreatePVCRequest,
 			encodeCreatePVCResponse,
@@ -46,7 +46,7 @@ func NewServer(svc k8s_client.Service) quai.K8SClientServiceServer {
 }
 
 func (s *grpcServer) CreateNFSPersistentVolume(ctx context.Context, req *quai.NFSPersistentVolumeReq) (*quai.PersistentVolumeName, error) {
-	_, res, err := s.createNFSPV.ServeGRPC(ctx, req)
+	_, res, err := s.createNFSPersistentVolume.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, encodeError(err)
 	}
@@ -54,7 +54,7 @@ func (s *grpcServer) CreateNFSPersistentVolume(ctx context.Context, req *quai.NF
 }
 
 func (s *grpcServer) CreatePersistentVolumeClaim(ctx context.Context, req *quai.PersistentVolumeClaimReq) (*quai.PersistentVolumeClaimName, error) {
-	_, res, err := s.createPVC.ServeGRPC(ctx, req)
+	_, res, err := s.createPersistentVolumeClaim.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, encodeError(err)
 	}
@@ -85,7 +85,7 @@ func encodeCreateNFSPVCResponse(_ context.Context, grpcRes interface{}) (interfa
 }
 
 func decodeCreatePVCRequest(_ context.Context, grpcReq interface{}) (interface{}, error) {
-	req := grpcReq.(*quai.NFSPersistentVolumeReq)
+	req := grpcReq.(*quai.PersistentVolumeClaimReq)
 	return createPVCReq{
 		Name:    req.Name,
 		Storage: req.Storage,
@@ -99,15 +99,16 @@ func encodeCreatePVCResponse(_ context.Context, grpcRes interface{}) (interface{
 
 func decodeCreateDeploymentRequest(_ context.Context, grpcReq interface{}) (interface{}, error) {
 	req := grpcReq.(*quai.DeploymentReq)
-	resource := k8s_client.Resource{}
+
+	resource := Resource{}
 	if req.Resource != nil {
 		resource.Memory = req.Resource.Memory
 		resource.CPU = req.Resource.CPU
 		resource.GPU = req.Resource.GPU
 	}
-	var volumes []*k8s_client.VolumeInfo
+	volumes := []*VolumeInfo{}
 	for _, volume := range req.Volumes {
-		volumes = append(volumes, &k8s_client.VolumeInfo{
+		volumes = append(volumes, &VolumeInfo{
 			Name:      volume.Name,
 			PVCName:   volume.PVCName,
 			MountPath: volume.MountPath,
@@ -115,7 +116,6 @@ func decodeCreateDeploymentRequest(_ context.Context, grpcReq interface{}) (inte
 	}
 
 	return createDeploymentReq{
-		deployment: k8s_client.Deployment{
 			Name:      req.Name,
 			Replicas:  req.Replicas,
 			Image:     req.Image,
@@ -123,7 +123,6 @@ func decodeCreateDeploymentRequest(_ context.Context, grpcReq interface{}) (inte
 			Volumes:   volumes,
 			Command:   req.Command,
 			Arguments: req.Arguments,
-		},
 	}, nil
 }
 
